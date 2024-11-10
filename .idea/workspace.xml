@@ -9,7 +9,6 @@
       <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/backend/.idea/.gitignore" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/backend/.idea/dataSources.xml" afterDir="false" />
@@ -4662,7 +4661,7 @@
       <workItem from="1731165952703" duration="4121000" />
       <workItem from="1731229021597" duration="2049000" />
       <workItem from="1731231088770" duration="894000" />
-      <workItem from="1731232012774" duration="366000" />
+      <workItem from="1731232012774" duration="445000" />
     </task>
     <servers />
   </component>
