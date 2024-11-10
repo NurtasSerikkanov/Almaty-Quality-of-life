@@ -1,0 +1,33 @@
+/* styles/Appeals.css */
+.appeals {
+    padding: 20px;
+}
+
+.controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.appeals-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.appeals-table th, .appeals-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+.appeals-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+.appeals-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.appeals-table tr:hover {
+    background-color: #e0e0e0;
+}
