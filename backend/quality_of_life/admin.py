@@ -15,4 +15,4 @@ class ResponseInfoAdmin(admin.ModelAdmin):
 
 @admin.register(AdditionalAttributes)
 class AdditionalAttributesAdmin(admin.ModelAdmin):
-    list_display = ('id', 'appeal', 'received_from', 'category_id', 'kind_of_appea_id')
+    list_display = ('id', 'appeal', 'received_from', 'category_id', 'kind_of_appeal_id')

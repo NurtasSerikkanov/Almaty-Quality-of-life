@@ -2,7 +2,6 @@
 from rest_framework import serializers
 from .models import Appeal, ExecutionInfo, ResponseInfo, AdditionalAttributes
 
-
 class ExecutionInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = ExecutionInfo
@@ -30,4 +29,6 @@ class AppealSerializer(serializers.ModelSerializer):
         model = Appeal
         fields = ['id', 'title', 'description', 'creation_date', 'completion_date',
                   'status', 'process_status', 'address', 'coord_x', 'coord_y',
-                  'executions', 'responses', 'attributes']
+                  'location', 'hexagon_id',
+                  'executions', 'responses', 'attributes', 'boundary_coords']
+
