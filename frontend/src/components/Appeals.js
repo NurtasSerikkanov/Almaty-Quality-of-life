@@ -1,35 +1,33 @@
-// components/Appeals.js
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import '../styles/Appeals.css';
 
 function Appeals() {
     const [appeals, setAppeals] = useState([]);
-    const [searchTerm, setSearchTerm] = useState("");  // Строка поиска
-    const [limit, setLimit] = useState(100);  // Лимит отображаемых записей
+    const [searchTerm, setSearchTerm] = useState("");
+    const [limit, setLimit] = useState(100);
 
-    useEffect(() => {
-        fetchAppeals();
-    }, [limit, searchTerm]);
-
-    const fetchAppeals = () => {
+    const fetchAppeals = useCallback(() => {
         axios.get(`http://127.0.0.1:8000/api/appeals/?search=${searchTerm}&limit=${limit}`)
             .then(response => {
-                console.log("Ответ от бэкенда:", response.data);  // Выводим данные для проверки
+                console.log("Ответ от бэкенда:", response.data);
                 setAppeals(response.data.results || response.data);
             })
             .catch(error => {
                 console.error("Ошибка при получении данных жалоб:", error);
             });
-    };
+    }, [searchTerm, limit]);
 
+    useEffect(() => {
+        fetchAppeals();
+    }, [fetchAppeals]);
 
     const handleSearchChange = (e) => {
         setSearchTerm(e.target.value);
     };
 
     const handleLimitChange = (e) => {
-        setLimit(e.target.value);
+        setLimit(Number(e.target.value));
     };
 
     return (

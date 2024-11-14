@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Routes, NavLink } from 'react-router-do
 import Home from './components/Home';
 import Analytics from './components/Analytics';
 import About from './components/About';
-import Appeals from './components/Appeals';  // Импортируем новый компонент
+import Appeals from './components/Appeals';
 import './App.css';
 
 function App() {

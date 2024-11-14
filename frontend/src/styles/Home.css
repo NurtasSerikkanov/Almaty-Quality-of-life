@@ -1,37 +1,87 @@
+/* Основной стиль страницы */
 .home {
-    min-height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: start;
-    color: #333;
-  }
-  
-  .home h1 {
-    font-size: 24px;
-    color: #2c3e50;
-    margin-bottom: 20px;
-  }
-  
-  .map-placeholder {
-    width: 80%;
-    height: 300px;
-    background-color: #f4f4f9;
-    margin: 0 auto;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #333;
-  }
-  
-  .statistics {
-    margin-top: 20px;
-    color: #2c3e50;
-    font-size: 16px;
-  }
-  
-  .statistics p {
-    font-size: 20px;
-    margin: 10px 0;
-  }
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f5f8fa;
+  color: #333;
+}
+
+.home h1 {
+  font-size: 28px;
+  color: #2c3e50;
+  margin: 20px 0;
+  text-align: center;
+}
+
+/* Контейнер для карты */
+.home-map-container {
+  position: relative;
+  width: 85%;
+  max-width: 1200px;
+  height: 600px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+/* Кнопки для карты */
+.fullscreen-btn, .reset-btn {
+  background-color: #836666;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  border-radius: 5px;
+  position: absolute;
+  z-index: 1000;
+}
+
+.fullscreen-btn {
+  top: 10px;
+  right: 10px;
+}
+
+.reset-btn {
+  top: 10px;
+  right: 100px;
+}
+
+/* Легенда */
+.home-legend {
+  position: absolute;
+  bottom: 10px;
+  left: 60%;
+  transform: translateX(-50%);
+  padding: 10px;
+  background: white;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  width: 60%;
+  max-width: 1200px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.home-legend h4 {
+  margin: 0;
+  color: #333;
+  font-size: 16px;
+}
+
+.legend-bar {
+  height: 10px;
+  margin: 8px 0;
+  background: linear-gradient(to right, #f2f2f2, #e31a1c, #bd0026);
+  border-radius: 5px;
+}
+
+.legend-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #333;
+}
+

@@ -1,22 +1,22 @@
 import React, { useState } from 'react';
 import '../styles/Analytics.css';
-import { Bar } from 'react-chartjs-2';
+// import { Bar } from 'react-chartjs-2';
 
 function Analytics() {
   const [year, setYear] = useState('');
   const [month, setMonth] = useState('');
   const [type, setType] = useState('');
 
-  const data = {
-    labels: ['Район 1', 'Район 2', 'Район 3', 'Район 4'],
-    datasets: [
-      {
-        label: 'Количество',
-        data: [12, 19, 3, 5],
-        backgroundColor: '#4f6475'
-      }
-    ]
-  };
+  // const data = {
+  //   labels: ['Район 1', 'Район 2', 'Район 3', 'Район 4'],
+  //   datasets: [
+  //     {
+  //       label: 'Количество',
+  //       data: [12, 19, 3, 5],
+  //       backgroundColor: '#4f6475'
+  //     }
+  //   ]
+  // };
 
   const handleFilterChange = () => {
     
