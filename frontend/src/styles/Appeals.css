@@ -1,32 +1,44 @@
+<<<<<<< HEAD
 .appeals {
+=======
+.analytics {
+>>>>>>> bc08205 (upd)
     padding: 20px;
+    color: #333;
 }
 
-.controls {
+.analytics h1 {
+    font-size: 24px;
+    color: #2c3e50;
+    margin-bottom: 20px;
+}
+
+.filters {
     display: flex;
     gap: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
 }
 
-.appeals-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.appeals-table th, .appeals-table td {
-    border: 1px solid #ddd;
+.filters select, .filters button {
     padding: 8px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
 }
 
-.appeals-table th {
-    background-color: #f4f4f4;
-    font-weight: bold;
-}
-
-.appeals-table tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-.appeals-table tr:hover {
+.map-placeholder {
+    width: 100%;
+    height: 300px;
     background-color: #e0e0e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #333;
+    margin-bottom: 20px;
+    border-radius: 8px;
+}
+
+.chart {
+    width: 100%;
+    height: 400px;
 }

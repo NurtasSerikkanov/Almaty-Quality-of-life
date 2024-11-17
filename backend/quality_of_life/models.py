@@ -13,7 +13,7 @@ class Appeal(models.Model):
     coord_y = models.FloatField(db_column='coord_y')
     location = models.PointField(srid=4326, geography=True, spatial_index=True, null=True)
     hexagon_id = models.IntegerField(blank=True, null=True, db_column='hexagon_id')
-    boundary_coords = models.JSONField(blank=True, null=True, db_column='boundary_coords')  # Новое поле для координат
+    boundary_coords = models.JSONField(blank=True, null=True, db_column='boundary_coords')
 
     class Meta:
         db_table = 'appeals'

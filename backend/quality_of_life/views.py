@@ -21,11 +21,18 @@ class AppealViewSet(viewsets.ModelViewSet):
 
 def hexagon_data(request):
     with connection.cursor() as cursor:
-        # Выполняем SQL-запрос для подсчета типов обращений по каждому hexagon_id
+        # Получение всех уникальных hexagon_id
+        cursor.execute("""
+            SELECT DISTINCT hexagon_id, boundary_coords 
+            FROM appeals 
+            WHERE boundary_coords IS NOT NULL
+        """)
+        all_hexes = cursor.fetchall()
+
+        # Подсчёт обращений по типам
         cursor.execute("""
             SELECT 
                 a.hexagon_id, 
-                a.boundary_coords,
                 SUM(CASE WHEN kind_of_appeal_id = 1 THEN 1 ELSE 0 END) AS appeals,
                 SUM(CASE WHEN kind_of_appeal_id = 2 THEN 1 ELSE 0 END) AS requests,
                 SUM(CASE WHEN kind_of_appeal_id = 3 THEN 1 ELSE 0 END) AS suggestions,
@@ -37,26 +44,40 @@ def hexagon_data(request):
             FROM appeals AS a
             LEFT JOIN additional_attributes AS aa ON a.id = aa.appeal_id
             WHERE boundary_coords IS NOT NULL
-            GROUP BY a.hexagon_id, a.boundary_coords
+            GROUP BY a.hexagon_id
         """)
         rows = cursor.fetchall()
 
-    # Формирование GeoJSON-структуры с подсчетом типов обращений
+    # Создаём карту хексов с данными
+    data_map = {row[0]: row[1:] for row in rows}
+
+    # Формируем GeoJSON
     features = []
-    for row in rows:
-        (
-            hexagon_id,
-            boundary_coords,
-            appeals_count,
-            requests_count,
-            suggestions_count,
-            responses_count,
-            complaints_count,
-            others_count,
-            gratitudes_count,
-            messages_count
-        ) = row
+    for hex_id, boundary_coords in all_hexes:
         boundary_coords_json = json.loads(boundary_coords)
+
+        if hex_id in data_map:
+            # Данные существуют
+            (
+                appeals_count,
+                requests_count,
+                suggestions_count,
+                responses_count,
+                complaints_count,
+                others_count,
+                gratitudes_count,
+                messages_count
+            ) = data_map[hex_id]
+        else:
+            # Пустой хекс
+            appeals_count = 0
+            requests_count = 0
+            suggestions_count = 0
+            responses_count = 0
+            complaints_count = 0
+            others_count = 0
+            gratitudes_count = 0
+            messages_count = 0
 
         feature = {
             "type": "Feature",
@@ -65,7 +86,7 @@ def hexagon_data(request):
                 "coordinates": [boundary_coords_json]
             },
             "properties": {
-                "hexagon_id": hexagon_id,
+                "hexagon_id": hex_id,
                 "total_requests": appeals_count + requests_count + suggestions_count +
                                   responses_count + complaints_count + others_count +
                                   gratitudes_count + messages_count,
@@ -87,4 +108,3 @@ def hexagon_data(request):
     }
 
     return JsonResponse(geojson)
-
