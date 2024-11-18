@@ -8,23 +8,16 @@ mapboxgl.accessToken = 'pk.eyJ1IjoibnVydGFzIiwiYSI6ImNtM2Jzejd1ZTFpczkyanNjMms2d
 function Home() {
     const mapContainer = useRef(null);
     const mapRef = useRef(null);
+    const [selectedType, setSelectedType] = useState('all');
     const [isFullscreen, setIsFullscreen] = useState(false);
 
-<<<<<<< HEAD
-    // Начальные координаты центра и зум
-=======
->>>>>>> bc08205 (upd)
     const initialCenter = [76.885, 43.238];
     const initialZoom = 11;
 
     useEffect(() => {
         const map = new mapboxgl.Map({
             container: mapContainer.current,
-<<<<<<< HEAD
-            style: 'mapbox://styles/mapbox/streets-v11', // Новый стиль карты
-=======
             style: 'mapbox://styles/mapbox/streets-v11',
->>>>>>> bc08205 (upd)
             center: initialCenter,
             zoom: initialZoom,
         });
@@ -41,85 +34,64 @@ function Home() {
                 .then(data => {
                     console.log("Данные хексов получены:", data);
 
-<<<<<<< HEAD
-                    // Добавляем данные хексов в качестве источника
-=======
->>>>>>> bc08205 (upd)
                     map.addSource('hexagons-source', {
                         type: 'geojson',
                         data: data,
                     });
 
-<<<<<<< HEAD
-                    // Добавляем слой заливки гексагонов с динамическим цветом на основе количества жалоб
-=======
-                    // Слой для заливки всех хексов, включая пустые
->>>>>>> bc08205 (upd)
+                    // Слой с цветовой палитрой
                     map.addLayer({
                         id: 'hexagons-layer-fill',
                         type: 'fill',
                         source: 'hexagons-source',
                         paint: {
-<<<<<<< HEAD
-                            // Условие для цвета заливки в зависимости от количества жалоб
-                            'fill-color': [
-                                'interpolate',
-                                ['linear'],
-                                ['get', 'complaints'], // Количество жалоб
-                                0, '#FFEDA0',   // минимальное значение — светлый цвет
-                                30, '#FEB24C',  // среднее значение — более насыщенный цвет
-                                100, '#F03B20'   // максимальное значение — самый насыщенный цвет
-=======
                             'fill-color': [
                                 'case',
-                                ['>', ['get', 'total_requests'], 0],
+                                ['==', selectedType, 'all'],
                                 [
                                     'interpolate',
                                     ['linear'],
                                     ['get', 'total_requests'],
-                                    0, '#FFEDA0',   // Низкие значения
-                                    30, '#FEB24C',  // Средние значения
-                                    100, '#F03B20'  // Высокие значения
+                                    0, 'rgba(255,255,255,0.45)',
+                                    1, 'rgba(103,236,50,0.5)',
+                                    10, 'rgba(241, 194, 50,0.5)',
+                                    100, 'rgba(253,114,14,0.5)',
+                                    1000, 'rgba(243,2,2,0.5)'
                                 ],
-                                '#f2f2f2' // Цвет для пустых хексов
->>>>>>> bc08205 (upd)
+                                [
+                                    'interpolate',
+                                    ['linear'],
+                                    ['get', selectedType],
+                                    0, 'rgba(255,255,255,0.45)',
+                                    1, 'rgba(103,236,50,0.5)',
+                                    10, 'rgba(241, 194, 50,0.5)',
+                                    100, 'rgba(253,114,14,0.5)',
+                                    1000, 'rgba(243,2,2,0.5)'
+                                ]
                             ],
-                            'fill-opacity': 0.6,
+                            'fill-opacity': 0.8,
+                            'fill-outline-color': 'rgba(151, 161, 169, 0.6)',
                         },
                     });
 
-<<<<<<< HEAD
-                    // Добавляем слой границ гексагонов
-=======
-                    // Слой для границ хексов
->>>>>>> bc08205 (upd)
+                    // Слой для границ гексагонов
                     map.addLayer({
                         id: 'hexagons-layer-borders',
                         type: 'line',
                         source: 'hexagons-source',
                         paint: {
-                            'line-color': '#FF8C00',
+                            'line-color': '#101010',
                             'line-width': 1,
                         },
                     });
 
-<<<<<<< HEAD
-                    // Добавляем обработчик кликов по гексагону
-                    map.on('click', 'hexagons-layer-fill', (e) => {
-                        const properties = e.features[0].properties;
-
-                        // Формируем содержимое всплывающего окна
-                        const popupContent = `
-                            <strong>Hexagon ID: ${properties.hexagon_id}</strong><br>
-=======
-                    // Обработчик клика на хекс
+                    // Обработчик кликов по гексагону
                     map.on('click', 'hexagons-layer-fill', (e) => {
                         const properties = e.features[0].properties;
 
                         const popupContent = `
                             <strong>Hexagon ID: ${properties.hexagon_id}</strong><br>
                             Всего запросов: ${properties.total_requests || 0}<br>
->>>>>>> bc08205 (upd)
                             Жалобы: ${properties.complaints || 0}<br>
                             Запросы: ${properties.requests || 0}<br>
                             Предложения: ${properties.suggestions || 0}<br>
@@ -129,52 +101,59 @@ function Home() {
                             Сообщения: ${properties.messages || 0}
                         `;
 
-<<<<<<< HEAD
-                        // Показ всплывающего окна
-=======
->>>>>>> bc08205 (upd)
                         new mapboxgl.Popup()
                             .setLngLat(e.lngLat)
                             .setHTML(popupContent)
                             .addTo(map);
-<<<<<<< HEAD
 
-                        // Автоматическое приближение к хексагону
-                        const coordinates = e.features[0].geometry.coordinates[0][0];
+                        // Переместить карту к гексагону
+                        const [lng, lat] = e.features[0].geometry.coordinates[0][0];
                         map.flyTo({
-                            center: coordinates,
-                            zoom: 14, // Уровень зума для приближения
+                            center: [lng, lat],
+                            zoom: 14,
+                            speed: 1.5,
+                            curve: 1,
+                            essential: true,
                         });
-                    });
-
-                    // Изменяем курсор при наведении на гексагон
-=======
-                    });
-
-                    // Изменяем курсор при наведении на хекс
->>>>>>> bc08205 (upd)
-                    map.on('mouseenter', 'hexagons-layer-fill', () => {
-                        map.getCanvas().style.cursor = 'pointer';
-                    });
-
-                    map.on('mouseleave', 'hexagons-layer-fill', () => {
-                        map.getCanvas().style.cursor = '';
                     });
                 })
                 .catch(error => console.error("Ошибка загрузки данных хексов:", error));
         });
 
         return () => map.remove();
-    }, []);
+    }, [selectedType]);
+
+    const handleTypeChange = (event) => {
+        setSelectedType(event.target.value);
+    };
 
     const toggleFullscreen = () => {
+        const mapContainerElement = mapContainer.current;
+
+        if (!isFullscreen) {
+            if (mapContainerElement.requestFullscreen) {
+                mapContainerElement.requestFullscreen();
+            } else if (mapContainerElement.webkitRequestFullscreen) {
+                mapContainerElement.webkitRequestFullscreen();
+            } else if (mapContainerElement.mozRequestFullScreen) {
+                mapContainerElement.mozRequestFullScreen();
+            } else if (mapContainerElement.msRequestFullscreen) {
+                mapContainerElement.msRequestFullscreen();
+            }
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            }
+        }
         setIsFullscreen(!isFullscreen);
     };
 
-<<<<<<< HEAD
-    // Функция для сброса карты к начальному масштабу и центру
-=======
->>>>>>> bc08205 (upd)
     const resetMap = () => {
         if (mapRef.current) {
             mapRef.current.flyTo({ center: initialCenter, zoom: initialZoom });
@@ -184,11 +163,23 @@ function Home() {
     return (
         <div className={`home ${isFullscreen ? 'fullscreen' : ''}`}>
             <h1>Мониторинг качества жизни в районах Алматы</h1>
-            <div ref={mapContainer} className="home-map-container"></div>
-            <button className="fullscreen-btn" onClick={toggleFullscreen}>
-                {isFullscreen ? 'Обычный экран' : 'Во весь экран'}
-            </button>
-            <button className="reset-btn" onClick={resetMap}>Сброс</button>
+            <label htmlFor="request-type">Выберите тип запроса:</label>
+            <select id="request-type" onChange={handleTypeChange}>
+                <option value="all">Все</option>
+                <option value="complaints">Жалобы</option>
+                <option value="requests">Запросы</option>
+                <option value="suggestions">Предложения</option>
+                <option value="responses">Отзывы</option>
+                <option value="others">Другие</option>
+                <option value="gratitudes">Благодарности</option>
+                <option value="messages">Сообщения</option>
+            </select>
+            <div ref={mapContainer} className="home-map-container">
+                <button className="fullscreen-btn" onClick={toggleFullscreen}>
+                    {isFullscreen ? 'Обычный экран' : 'Во весь экран'}
+                </button>
+                <button className="reset-btn" onClick={resetMap}>Сброс</button>
+            </div>
         </div>
     );
 }

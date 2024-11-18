@@ -8,11 +8,7 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.7.7",
     "chart.js": "^4.4.6",
-<<<<<<< HEAD
-    "mapbox-gl": "^3.7.0",
-=======
     "mapbox-gl": "^3.8.0",
->>>>>>> bc08205 (upd)
     "react": "^18.3.1",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.3.1",

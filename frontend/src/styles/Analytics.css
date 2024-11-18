@@ -1,41 +1,95 @@
 .analytics {
-    padding: 20px;
-    color: #333;
-  }
-  
-  .analytics h1 {
-    font-size: 24px;
-    color: #2c3e50;
-    margin-bottom: 20px;
-  }
-  
-  .filters {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-  }
-  
-  .filters select, .filters button {
-    padding: 8px;
-    font-size: 16px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-  }
-  
-  .map-placeholder {
-    width: 100%;
-    height: 300px;
-    background-color: #e0e0e0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #333;
-    margin-bottom: 20px;
-    border-radius: 8px;
-  }
-  
-  .chart {
-    width: 100%;
-    height: 400px;
-  }
-  
+  padding: 20px;
+  color: #333;
+  font-family: Arial, sans-serif;
+}
+
+.analytics h1 {
+  font-size: 28px;
+  color: #2c3e50;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 20px;
+  justify-content: center;
+}
+
+.filters select,
+.filters button {
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.filters select:focus,
+.filters button:hover {
+  background-color: #e0e0e0;
+  color: #2c3e50;
+  outline: none;
+}
+
+.filters button {
+  background-color: #4f6475;
+  color: white;
+  font-weight: bold;
+  border: none;
+}
+
+.filters button:hover {
+  background-color: #3d5162;
+}
+
+.map-container {
+  position: relative;
+  width: 100%;
+  height: 500px;
+}
+
+.fullscreen-btn, .reset-btn {
+  background-color: #836666;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  border-radius: 5px;
+  position: absolute;
+  top: 10px;
+  z-index: 1000;
+}
+
+.fullscreen-btn {
+  left: 20px;
+}
+
+.reset-btn {
+  left: 160px;
+}
+
+.chart-container {
+  margin-top: 20px;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.chart {
+  width: 100%;
+  height: 400px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #2c3e50;
+}

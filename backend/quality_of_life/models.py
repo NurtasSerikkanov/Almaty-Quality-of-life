@@ -14,6 +14,9 @@ class Appeal(models.Model):
     location = models.PointField(srid=4326, geography=True, spatial_index=True, null=True)
     hexagon_id = models.IntegerField(blank=True, null=True, db_column='hexagon_id')
     boundary_coords = models.JSONField(blank=True, null=True, db_column='boundary_coords')
+    district_name = models.TextField(blank=True, null=True, db_column='district_name')
+    district_boundary = models.PolygonField(srid=4326, geography=True, spatial_index=True, blank=True, null=True,
+                                            db_column='district_boundary')
 
     class Meta:
         db_table = 'appeals'

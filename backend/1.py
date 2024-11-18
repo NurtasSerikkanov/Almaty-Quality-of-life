@@ -1,16 +1,56 @@
-import json
-from shapely.geometry import shape
+import psycopg2
+import geopandas as gpd
+from shapely.geometry import Polygon, MultiPolygon
 
-# Загрузите данные из GeoJSON файла
-with open("/Users/nurtasserikkanov/Desktop/export.geojson", "r") as f:
-    geojson_data = json.load(f)
+# Подключение к базе данных
+conn = psycopg2.connect(
+    dbname="openalmaty",
+    user="postgres",
+    password="t$hZw!Kz",
+    host="localhost",
+    port="5433"
+)
+cur = conn.cursor()
 
-# Преобразуем в объект Shapely и затем в WKT
-almaty_shape = shape(geojson_data["features"][0]["geometry"])
-almaty_wkt = almaty_shape.wkt
+# Загрузка GeoJSON с районами города
+districts = gpd.read_file("district.geojson")
+districts = districts.to_crs(epsg=4326)
 
-# Сохраняем данные WKT в файл
-with open("almaty_boundary.wkt", "w") as wkt_file:
-    wkt_file.write(almaty_wkt)
+# Очистка существующих данных
+cur.execute("""
+    UPDATE appeals
+    SET district_name = NULL, district_boundary = NULL
+""")
+conn.commit()
+print("Старые данные district_name и district_boundary очищены.")
 
-print("Граница Алматы в формате WKT сохранена в файл almaty_boundary.wkt")
+# Перебираем районы и обновляем записи
+for _, district in districts.iterrows():
+    district_name = district["name"]  # Название района
+    district_geometry = district["geometry"]  # Геометрия района
+
+    # Преобразование MultiPolygon в Polygon
+    if isinstance(district_geometry, MultiPolygon):
+        district_geometry = list(district_geometry.geoms)[0]  # Берём первый полигон
+
+    # Преобразуем геометрию района в формат WKT
+    district_wkt = district_geometry.wkt
+
+    # Обновляем записи в таблице appeals, которые находятся внутри данного района
+    cur.execute("""
+        UPDATE appeals
+        SET district_name = %s, district_boundary = ST_SetSRID(ST_GeomFromText(%s), 4326)
+        WHERE ST_Contains(ST_SetSRID(ST_GeomFromText(%s), 4326), location)
+    """, (
+        district_name,
+        district_wkt,
+        district_wkt
+    ))
+    print(f"Обновлены точки для района: {district_name}")
+
+conn.commit()
+print("Данные успешно обновлены!")
+
+# Закрытие соединения
+cur.close()
+conn.close()
