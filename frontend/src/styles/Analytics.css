@@ -1,12 +1,18 @@
 .analytics {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   padding: 20px;
+  background: linear-gradient(135deg, #cde0e9, #f5f8fa); /* Светлый градиентный фон */
   color: #333;
-  font-family: Arial, sans-serif;
+  position: relative;
 }
 
 .analytics h1 {
-  font-size: 28px;
-  color: #2c3e50;
+  font-size: 32px;
+  font-weight: bold;
+  color: #2c3e50; /* Тёмный текст */
   margin-bottom: 20px;
   text-align: center;
 }
@@ -14,82 +20,91 @@
 .filters {
   display: flex;
   flex-wrap: wrap;
-  gap: 15px;
-  margin-bottom: 20px;
-  justify-content: center;
+  gap: 20px; /* Расстояние между элементами */
+  margin-bottom: 30px;
+  justify-content: center; /* Центрируем элементы */
+  align-items: center; /* Выровняем по вертикали */
 }
 
-.filters select,
-.filters button {
-  padding: 10px;
+.filters select {
+  padding: 10px 15px;
   font-size: 16px;
-  border-radius: 5px;
+  font-family: 'Montserrat', sans-serif;
+  border-radius: 8px;
   border: 1px solid #ccc;
-  background-color: #f9f9f9;
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: all 0.3s ease;
 }
 
-.filters select:focus,
-.filters button:hover {
-  background-color: #e0e0e0;
-  color: #2c3e50;
+.filters select:hover {
+  border-color: #3498db; /* Акцентный цвет */
+  box-shadow: 0 4px 8px rgba(52, 152, 219, 0.2); /* Подсветка */
+}
+
+.filters select:focus {
   outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 10px rgba(52, 152, 219, 0.4); /* Синее свечение при фокусе */
 }
 
 .filters button {
-  background-color: #4f6475;
-  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-family: 'Montserrat', sans-serif;
   font-weight: bold;
+  color: white;
+  background-color: #4f6475;
   border: none;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  height: 45px; /* Фиксированная высота для кнопки */
+  line-height: 1; /* Устраняем проблемы с вертикальным выравниванием текста */
+}
+.filters button:hover {
+  background-color: #3d5162; /* Более тёмный оттенок */
+  transform: scale(1.05); /* Лёгкое увеличение */
 }
 
-.filters button:hover {
-  background-color: #3d5162;
+.filters button:focus {
+  outline: none;
+  box-shadow: 0 0 10px rgba(52, 152, 219, 0.4); /* Подсветка */
 }
 
 .map-container {
   position: relative;
   width: 100%;
+  max-width: 1200px;
   height: 500px;
-}
-
-.fullscreen-btn, .reset-btn {
-  background-color: #836666;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  cursor: pointer;
-  font-size: 14px;
-  border-radius: 5px;
-  position: absolute;
-  top: 10px;
-  z-index: 1000;
-}
-
-.fullscreen-btn {
-  left: 20px;
-}
-
-.reset-btn {
-  left: 160px;
+  margin: 0 auto;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Тень */
+  background-color: rgba(255, 255, 255, 0.8); /* Полупрозрачный белый фон */
+  backdrop-filter: blur(5px); /* Лёгкое размытие */
+  overflow: hidden;
 }
 
 .chart-container {
-  margin-top: 20px;
+  margin-top: 40px; /* Увеличиваем отступ сверху */
   width: 100%;
   max-width: 800px;
-  margin: 0 auto;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0; /* Убираем внутренние отступы */
+  background: none !important; /* Убираем фон */
+  border-radius: 0; /* Убираем закругления */
+  box-shadow: none !important; /* Убираем тени */
 }
 
 .chart {
   width: 100%;
   height: 400px;
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #2c3e50;
+  background: none !important; /* Убираем фон у самого графика */
+  border: none !important; /* Убираем границы */
 }

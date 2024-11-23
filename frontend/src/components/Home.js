@@ -15,6 +15,7 @@ function Home() {
     const initialZoom = 11;
 
     useEffect(() => {
+        // Инициализация карты
         const map = new mapboxgl.Map({
             container: mapContainer.current,
             style: 'mapbox://styles/mapbox/streets-v11',
@@ -27,104 +28,135 @@ function Home() {
         map.on('load', () => {
             console.log("Карта загружена");
 
-            fetch('http://127.0.0.1:8000/api/hexagon-data/', {
-                mode: 'cors'
-            })
-                .then(response => response.json())
-                .then(data => {
-                    console.log("Данные хексов получены:", data);
+            // Загрузка данных из API
+            fetchDataAndUpdateMap(map);
+        });
 
+        return () => map.remove();
+    }, []);
+
+    // Загрузка данных и обновление карты
+    const fetchDataAndUpdateMap = (map) => {
+        fetch('http://127.0.0.1:8000/api/hexagon-data/', {
+            mode: 'cors'
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Данные хексов получены:", data);
+
+                const layerId = 'hexagons-layer-fill';
+
+                if (map.getLayer(layerId)) {
+                    map.removeLayer(layerId);
+                }
+                if (map.getSource('hexagons-source')) {
+                    map.removeSource('hexagons-source');
+                }
+
+                // Обновление источника или добавление нового
+                const source = map.getSource('hexagons-source');
+                if (source) {
+                    source.setData(data); // Принудительно обновляем источник
+                } else {
                     map.addSource('hexagons-source', {
                         type: 'geojson',
                         data: data,
                     });
+                }
 
-                    // Слой с цветовой палитрой
-                    map.addLayer({
-                        id: 'hexagons-layer-fill',
-                        type: 'fill',
-                        source: 'hexagons-source',
-                        paint: {
-                            'fill-color': [
-                                'case',
-                                ['==', selectedType, 'all'],
-                                [
-                                    'interpolate',
-                                    ['linear'],
-                                    ['get', 'total_requests'],
-                                    0, 'rgba(255,255,255,0.45)',
-                                    1, 'rgba(103,236,50,0.5)',
-                                    10, 'rgba(241, 194, 50,0.5)',
-                                    100, 'rgba(253,114,14,0.5)',
-                                    1000, 'rgba(243,2,2,0.5)'
-                                ],
-                                [
-                                    'interpolate',
-                                    ['linear'],
-                                    ['get', selectedType],
-                                    0, 'rgba(255,255,255,0.45)',
-                                    1, 'rgba(103,236,50,0.5)',
-                                    10, 'rgba(241, 194, 50,0.5)',
-                                    100, 'rgba(253,114,14,0.5)',
-                                    1000, 'rgba(243,2,2,0.5)'
-                                ]
+                map.addLayer({
+                    id: 'hexagons-layer-fill',
+                    type: 'fill',
+                    source: 'hexagons-source',
+                    paint: {
+                        'fill-color': [
+                            'case',
+                            ['==', selectedType, 'all'],
+                            [
+                                'interpolate',
+                                ['linear'],
+                                ['get', 'total_requests'],
+                                0, 'rgba(255,255,255,0.45)',
+                                1, 'rgba(103,236,50,0.5)',
+                                10, 'rgba(241, 194, 50,0.5)',
+                                100, 'rgba(253,114,14,0.5)',
+                                1000, 'rgba(243,2,2,0.5)'
                             ],
-                            'fill-opacity': 0.8,
-                            'fill-outline-color': 'rgba(151, 161, 169, 0.6)',
-                        },
+                            [
+                                'interpolate',
+                                ['linear'],
+                                ['get', selectedType],
+                                0, 'rgba(255,255,255,0.45)',
+                                1, 'rgba(103,236,50,0.5)',
+                                10, 'rgba(241, 194, 50,0.5)',
+                                100, 'rgba(253,114,14,0.5)',
+                                1000, 'rgba(243,2,2,0.5)'
+                            ]
+                        ],
+                        'fill-opacity': 0.8,
+                        'fill-outline-color': 'rgba(151, 161, 169, 0.6)',
+                    },
+                });
+
+                // Удаление и добавление слоя границ
+                if (map.getLayer('hexagons-layer-borders')) {
+                    map.removeLayer('hexagons-layer-borders');
+                }
+                map.addLayer({
+                    id: 'hexagons-layer-borders',
+                    type: 'line',
+                    source: 'hexagons-source',
+                    paint: {
+                        'line-color': '#101010',
+                        'line-width': 1,
+                    },
+                });
+
+                // Обработчик кликов по гексагону
+                map.on('click', 'hexagons-layer-fill', (e) => {
+                    const properties = e.features[0].properties;
+
+                    // console.log('Данные для попапа:', properties); // Проверьте, совпадают ли данные
+
+                    const popupContent = `
+                        <strong>Hexagon ID: ${properties.hexagon_id}</strong><br>
+                        Всего запросов: ${properties.total_requests || 0}<br>
+                        Заявление: ${properties.appeals || 0}<br>
+                        Жалобы: ${properties.complaints || 0}<br>
+                        Запросы: ${properties.requests || 0}<br>
+                        Предложения: ${properties.suggestions || 0}<br>
+                        Отзывы: ${properties.responses || 0}<br>
+                        Другие: ${properties.others || 0}<br>
+                        Благодарности: ${properties.gratitudes || 0}<br>
+                        Сообщения: ${properties.messages || 0}
+                    `;
+
+                    new mapboxgl.Popup()
+                        .setLngLat(e.lngLat)
+                        .setHTML(popupContent)
+                        .addTo(map);
+
+                    const [lng, lat] = e.features[0].geometry.coordinates[0][0];
+                    map.flyTo({
+                        center: [lng, lat],
+                        zoom: 14,
+                        speed: 1.5,
+                        curve: 1,
+                        essential: true,
                     });
+                });
+            })
+            .catch(error => console.error("Ошибка загрузки данных хексов:", error));
+    };
 
-                    // Слой для границ гексагонов
-                    map.addLayer({
-                        id: 'hexagons-layer-borders',
-                        type: 'line',
-                        source: 'hexagons-source',
-                        paint: {
-                            'line-color': '#101010',
-                            'line-width': 1,
-                        },
-                    });
-
-                    // Обработчик кликов по гексагону
-                    map.on('click', 'hexagons-layer-fill', (e) => {
-                        const properties = e.features[0].properties;
-
-                        const popupContent = `
-                            <strong>Hexagon ID: ${properties.hexagon_id}</strong><br>
-                            Всего запросов: ${properties.total_requests || 0}<br>
-                            Жалобы: ${properties.complaints || 0}<br>
-                            Запросы: ${properties.requests || 0}<br>
-                            Предложения: ${properties.suggestions || 0}<br>
-                            Отзывы: ${properties.responses || 0}<br>
-                            Другие: ${properties.others || 0}<br>
-                            Благодарности: ${properties.gratitudes || 0}<br>
-                            Сообщения: ${properties.messages || 0}
-                        `;
-
-                        new mapboxgl.Popup()
-                            .setLngLat(e.lngLat)
-                            .setHTML(popupContent)
-                            .addTo(map);
-
-                        // Переместить карту к гексагону
-                        const [lng, lat] = e.features[0].geometry.coordinates[0][0];
-                        map.flyTo({
-                            center: [lng, lat],
-                            zoom: 14,
-                            speed: 1.5,
-                            curve: 1,
-                            essential: true,
-                        });
-                    });
-                })
-                .catch(error => console.error("Ошибка загрузки данных хексов:", error));
-        });
-
-        return () => map.remove();
-    }, [selectedType]);
-
+    // Обработчик выбора типа
     const handleTypeChange = (event) => {
         setSelectedType(event.target.value);
+
+        // Принудительное обновление карты при изменении типа
+        if (mapRef.current) {
+            fetchDataAndUpdateMap(mapRef.current);
+        }
     };
 
     const toggleFullscreen = () => {
@@ -166,6 +198,7 @@ function Home() {
             <label htmlFor="request-type">Выберите тип запроса:</label>
             <select id="request-type" onChange={handleTypeChange}>
                 <option value="all">Все</option>
+                <option value="appeals">Заявление</option>ё
                 <option value="complaints">Жалобы</option>
                 <option value="requests">Запросы</option>
                 <option value="suggestions">Предложения</option>

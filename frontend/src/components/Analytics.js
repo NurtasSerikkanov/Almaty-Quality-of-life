@@ -51,6 +51,7 @@ function Analytics() {
         const popupContent = `
           <strong>${properties.district_name}</strong><br>
           Всего запросов: ${properties.total_requests || 0}<br>
+          Заявление: ${properties.appeals || 0}<br>
           Жалобы: ${properties.complaints || 0}<br>
           Запросы: ${properties.requests || 0}<br>
           Предложения: ${properties.suggestions || 0}<br>
@@ -64,6 +65,15 @@ function Analytics() {
             .setLngLat(e.lngLat)
             .setHTML(popupContent)
             .addTo(map);
+
+        const [lng, lat] = e.features[0].geometry.coordinates[0][0];
+        map.flyTo({
+          center: [lng, lat],
+          zoom: 14,
+          speed: 1.5,
+          curve: 1,
+          essential: true,
+        });
       });
     });
 
@@ -203,6 +213,7 @@ function Analytics() {
 
           <select value={type} onChange={(e) => setType(e.target.value)}>
             <option value="total_requests">Все запросы</option>
+            <option value="appeals">Заявление</option>
             <option value="complaints">Жалобы</option>
             <option value="requests">Запросы</option>
             <option value="suggestions">Предложения</option>

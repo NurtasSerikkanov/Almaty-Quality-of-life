@@ -117,29 +117,35 @@ def district_data(request):
     year = request.GET.get('year')
     month = request.GET.get('month')
 
+    # Базовый SQL-запрос
     query = """
         SELECT
             district_name,
             ST_AsGeoJSON(district_boundary) AS boundary,
             COUNT(*) AS total_requests,
-            SUM(CASE WHEN aa.kind_of_appeal_id = 1 THEN 1 ELSE 0 END) AS complaints,
-            SUM(CASE WHEN aa.kind_of_appeal_id = 7 THEN 1 ELSE 0 END) AS gratitudes,
-            SUM(CASE WHEN aa.kind_of_appeal_id = 2 THEN 1 ELSE 0 END) AS requests,
-            SUM(CASE WHEN aa.kind_of_appeal_id = 3 THEN 1 ELSE 0 END) AS suggestions,
-            SUM(CASE WHEN aa.kind_of_appeal_id = 4 THEN 1 ELSE 0 END) AS responses
+            COALESCE(SUM(CASE WHEN aa.kind_of_appeal_id = 1 THEN 1 ELSE 0 END), 0) AS appeals,
+            COALESCE(SUM(CASE WHEN aa.kind_of_appeal_id = 2 THEN 1 ELSE 0 END), 0) AS requests,
+            COALESCE(SUM(CASE WHEN aa.kind_of_appeal_id = 3 THEN 1 ELSE 0 END), 0) AS suggestions,
+            COALESCE(SUM(CASE WHEN aa.kind_of_appeal_id = 4 THEN 1 ELSE 0 END), 0) AS responses,
+            COALESCE(SUM(CASE WHEN aa.kind_of_appeal_id = 5 THEN 1 ELSE 0 END), 0) AS complaints,
+            COALESCE(SUM(CASE WHEN aa.kind_of_appeal_id = 6 THEN 1 ELSE 0 END), 0) AS others,
+            COALESCE(SUM(CASE WHEN aa.kind_of_appeal_id = 7 THEN 1 ELSE 0 END), 0) AS gratitudes,
+            COALESCE(SUM(CASE WHEN aa.kind_of_appeal_id = 8 THEN 1 ELSE 0 END), 0) AS messages
         FROM appeals AS a
         LEFT JOIN additional_attributes AS aa ON a.id = aa.appeal_id
         WHERE district_boundary IS NOT NULL
     """
 
-    # Фильтры по year и month
+    # Добавляем фильтры по году и месяцу
     if year:
         query += f" AND EXTRACT(YEAR FROM a.creation_date) = {year}"
     if month:
         query += f" AND EXTRACT(MONTH FROM a.creation_date) = {month}"
 
+    # Группировка
     query += " GROUP BY district_name, district_boundary"
 
+    # Выполнение SQL-запроса
     with connection.cursor() as cursor:
         cursor.execute(query)
         rows = cursor.fetchall()
@@ -151,14 +157,27 @@ def district_data(request):
             district_name,
             boundary_geojson,
             total_requests,
-            complaints,
-            gratitudes,
-            requests,
-            suggestions,
-            responses
+            appeals_count,
+            requests_count,
+            suggestions_count,
+            responses_count,
+            complaints_count,
+            others_count,
+            gratitudes_count,
+            messages_count
         ) = row
 
-        boundary_coords = json.loads(boundary_geojson)
+        try:
+            # Проверка и парсинг координат района
+            boundary_coords = json.loads(boundary_geojson) if boundary_geojson else None
+        except json.JSONDecodeError:
+            print(f"Ошибка парсинга JSON для района {district_name}")
+            continue
+
+        # Проверяем, чтобы координаты не были пустыми
+        if not boundary_coords:
+            print(f"Пропускаем район {district_name} из-за пустых координат")
+            continue
 
         feature = {
             "type": "Feature",
@@ -166,12 +185,15 @@ def district_data(request):
             "properties": {
                 "district_name": district_name,
                 "total_requests": total_requests,
-                "complaints": complaints,
-                "gratitudes": gratitudes,
-                "requests": requests,
-                "suggestions": suggestions,
-                "responses": responses
-            }
+                "appeals": appeals_count,
+                "requests": requests_count,
+                "suggestions": suggestions_count,
+                "responses": responses_count,
+                "complaints": complaints_count,
+                "others": others_count,
+                "gratitudes": gratitudes_count,
+                "messages": messages_count,
+            },
         }
         features.append(feature)
 
