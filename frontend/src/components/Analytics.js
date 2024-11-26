@@ -69,7 +69,7 @@ function Analytics() {
         const [lng, lat] = e.features[0].geometry.coordinates[0][0];
         map.flyTo({
           center: [lng, lat],
-          zoom: 14,
+          zoom: 13,
           speed: 1.5,
           curve: 1,
           essential: true,
@@ -91,6 +91,18 @@ function Analytics() {
           setDistrictsData(data);
           updateChartData(data);
 
+          // Вычисляем минимальное и максимальное значение
+          let minValue = Infinity;
+          let maxValue = -Infinity;
+
+          data.features.forEach((feature) => {
+            const value = feature.properties['count']; // Замените 'count' на нужное поле
+            if (typeof value === 'number' && !isNaN(value)) {
+              minValue = Math.min(minValue, value);
+              maxValue = Math.max(maxValue, value);
+            }
+          });
+
           if (mapRef.current.getSource('districts-source')) {
             mapRef.current.getSource('districts-source').setData(data);
           } else {
@@ -99,6 +111,7 @@ function Analytics() {
               data: data,
             });
 
+            // Добавляем слой заливки
             mapRef.current.addLayer({
               id: 'districts-layer-fill',
               type: 'fill',
@@ -107,18 +120,19 @@ function Analytics() {
                 'fill-color': [
                   'interpolate',
                   ['linear'],
-                  ['get', type],
-                  0, 'rgba(255,255,255,0.45)',
-                  1, 'rgba(103,236,50,0.5)',
-                  10, 'rgba(241, 194, 50,0.5)',
-                  100, 'rgba(253,114,14,0.5)',
-                  1000, 'rgba(243,2,2,0.5)',
+                  ['get', 'count'], // Замените 'count' на нужное поле
+                  minValue, 'rgba(255,255,255,0.45)', // Минимальное значение - белый цвет
+                  minValue + (maxValue - minValue) * 0.25, 'rgba(103,236,50,0.5)', // 25% от диапазона
+                  minValue + (maxValue - minValue) * 0.5, 'rgba(241, 194, 50,0.5)', // 50% от диапазона
+                  minValue + (maxValue - minValue) * 0.75, 'rgba(253,114,14,0.5)', // 75% от диапазона
+                  maxValue, 'rgba(243,2,2,0.5)', // Максимальное значение - красный цвет
                 ],
                 'fill-outline-color': 'rgba(151, 161, 169, 0.6)',
                 'fill-opacity': 0.8,
               },
             });
 
+            // Добавляем слой границ
             mapRef.current.addLayer({
               id: 'districts-layer-borders',
               type: 'line',
@@ -180,7 +194,7 @@ function Analytics() {
 
   return (
       <div className="analytics">
-        <h1>Аналитика по районам</h1>
+        <h2>Аналитика по районам</h2>
 
         <div className="filters">
           <select value={year} onChange={(e) => setYear(e.target.value)}>

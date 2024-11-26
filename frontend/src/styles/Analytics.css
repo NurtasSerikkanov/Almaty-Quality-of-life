@@ -3,27 +3,43 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
-  background: linear-gradient(135deg, #cde0e9, #f5f8fa); /* Светлый градиентный фон */
+  background: url('almaty.jpg') no-repeat center center fixed;
+  background-size: cover;
   color: #333;
+  padding: 20px;
   position: relative;
 }
 
-.analytics h1 {
+.analytics::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+
+
+.analytics h2 {
   font-size: 32px;
-  font-weight: bold;
-  color: #2c3e50; /* Тёмный текст */
-  margin-bottom: 20px;
+  color: #FFFFFF;
+  margin: 20px 0;
   text-align: center;
+  font-weight: bold;
+  z-index: 2;
+  position: relative;
 }
 
 .filters {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px; /* Расстояние между элементами */
+  gap: 20px;
   margin-bottom: 30px;
-  justify-content: center; /* Центрируем элементы */
-  align-items: center; /* Выровняем по вертикали */
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
 }
 
 .filters select {
@@ -36,6 +52,7 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: all 0.3s ease;
+  z-index: 2;
 }
 
 .filters select:hover {
@@ -63,10 +80,11 @@
   transition: background-color 0.3s ease, transform 0.2s ease;
   height: 45px; /* Фиксированная высота для кнопки */
   line-height: 1; /* Устраняем проблемы с вертикальным выравниванием текста */
+  z-index: 2;
 }
 .filters button:hover {
-  background-color: #3d5162; /* Более тёмный оттенок */
-  transform: scale(1.05); /* Лёгкое увеличение */
+  background-color: #3d5162;
+  transform: scale(1.05);
 }
 
 .filters button:focus {
@@ -81,22 +99,25 @@
   height: 500px;
   margin: 0 auto;
   border-radius: 12px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Тень */
-  background-color: rgba(255, 255, 255, 0.8); /* Полупрозрачный белый фон */
-  backdrop-filter: blur(5px); /* Лёгкое размытие */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Усилили тень */
+  background-color: rgba(255, 255, 255, 0.95); /* Сделали карту светлее */
+  backdrop-filter: blur(10px); /* Увеличили размытие */
   overflow: hidden;
+  z-index: 2;
 }
 
 .chart-container {
-  margin-top: 40px; /* Увеличиваем отступ сверху */
+  margin-top: 40px;
   width: 100%;
   max-width: 800px;
   margin-left: auto;
   margin-right: auto;
-  padding: 0; /* Убираем внутренние отступы */
-  background: none !important; /* Убираем фон */
-  border-radius: 0; /* Убираем закругления */
-  box-shadow: none !important; /* Убираем тени */
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.95); /* Сделали графики светлее */
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Усилили тень */
+  backdrop-filter: blur(10px); /* Увеличили размытие */
+  z-index: 2;
 }
 
 .chart {
@@ -105,6 +126,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: none !important; /* Убираем фон у самого графика */
-  border: none !important; /* Убираем границы */
+  color: #2c3e50;
+  font-family: 'Montserrat', sans-serif;
+  border-radius: 8px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
 }

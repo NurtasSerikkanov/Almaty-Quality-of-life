@@ -14,14 +14,14 @@ function App() {
             <h2>Анализ городской среды</h2>
             <NavLink to="/" className="nav-link">Главная</NavLink>
             <NavLink to="/analytics" className="nav-link">Аналитика</NavLink>
-            <NavLink to="/appeals" className="nav-link">Все запросы</NavLink>  {/* Новый пункт меню */}
+            {/*<NavLink to="/appeals" className="nav-link">Все запросы</NavLink>  /!* Новый пункт меню *!/*/}
             <NavLink to="/about" className="nav-link">О проекте</NavLink>
           </nav>
           <main className="content">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/analytics" element={<Analytics />} />
-              <Route path="/appeals" element={<Appeals />} />  {/* Новый маршрут */}
+              {/*<Route path="/appeals" element={<Appeals />} />  /!* Новый маршрут *!/*/}
               <Route path="/about" element={<About />} />
             </Routes>
           </main>

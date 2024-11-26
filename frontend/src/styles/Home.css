@@ -3,8 +3,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: url('almaty.jpg') no-repeat center center fixed; /* Фон с изображением */
-  background-size: cover; /* Масштабирование изображения */
+  background: url('almaty.jpg') no-repeat center center fixed;
+  background-size: cover;
   color: #333;
   padding: 20px;
   position: relative;
@@ -17,13 +17,13 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* Полупрозрачный чёрный слой */
+  background-color: rgba(0, 0, 0, 0.5);
   z-index: 1;
 }
 
 .home h1 {
   font-size: 32px;
-  color: #ffffff; /* Белый текст для контраста с изображением */
+  color: #ffffff;
   margin: 20px 0;
   text-align: center;
   font-weight: bold;
